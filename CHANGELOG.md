@@ -1,3 +1,7 @@
+2.14.0
+------
+* Feature - Support of negative values for line chart. See [PR#787](https://github.com/eventbrite/britecharts/pull/787).
+
 2.13.2
 2.13.1
 2.13.0
