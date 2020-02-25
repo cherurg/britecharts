@@ -571,6 +571,50 @@ define([
                         expect(classes.includes('horizontal-grid-line--highlighted')).toEqual(true);
                     });
                 });
+
+                describe('when only negativa values are present', () => {
+                    beforeEach(() => {
+                        dataset = buildDataSet('withAllNegativeValues');
+                        lineChart = chart().grid('full');
+
+                        // DOM Fixture Setup
+                        f = jasmine.getFixtures();
+                        f.fixturesPath = 'base/test/fixtures/';
+                        f.load('testContainer.html');
+
+                        containerFixture = d3.select('.test-container');
+                        containerFixture.datum(dataset).call(lineChart);
+                    });
+
+                    afterEach(() => {
+                        containerFixture.remove();
+                        f = jasmine.getFixtures();
+                        f.cleanUp();
+                        f.clearCache();
+                    });
+
+                    it('The lowest Y-axis value is negative', () => {
+                        let values = dataset.dataByTopic[0].dates.map(it => it.value);
+                        let minValue = Math.min(...values);
+                        let minValueText = '' + minValue;
+                        expect(minValue < 0).toBeTruthy()
+
+                        let yAxis = d3.select('.y-axis-group');
+                        let text = yAxis.select('g.tick');
+                        expect(text.text()).toEqual(minValueText);
+                    });
+
+                    it('The highest Y-axis value is negative', () => {
+                        let values = dataset.dataByTopic[0].dates.map(it => it.value);
+                        let maxValue = Math.max(...values);
+                        let maxValueText = '' + maxValue;
+                        expect(maxValue < 0).toBeTruthy()
+
+                        let yAxis = d3.select('.y-axis-group');
+                        let text = yAxis.select('g.tick:last-child');
+                        expect(text.text()).toEqual(maxValueText);
+                    });
+                });
             });
 
             describe('Lifecycle', () => {
