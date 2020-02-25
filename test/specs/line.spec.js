@@ -554,11 +554,12 @@ define([
                         let values = dataset.dataByTopic[0].dates.map(it => it.value);
                         let minValue = Math.min(...values);
                         let minValueText = '' + minValue;
+                        expect(minValue < 0).toBeTruthy()
 
                         let yAxis = d3.select('.y-axis-group');
                         let text = yAxis.select('g.tick');
                         expect(text.text()).toEqual(minValueText);
-                    })
+                    });
 
                     it('0-axis is highlited with an additional class', () => {
                         let values = dataset.dataByTopic[0].dates.map(it => it.value);
