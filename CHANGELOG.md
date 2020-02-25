@@ -1,3 +1,8 @@
+2.15.0
+------
+* Fixed bug of Y-axis domain when all values in the line chart are negative.
+* Added `.minY()` and `.maxY()` methods to the line chart.
+
 2.14.0
 ------
 * Feature - Added negative values support for line chart (Thanks to Alexey Karpov)
