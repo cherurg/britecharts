@@ -278,7 +278,10 @@ define(function(require){
                 'customMouseMove',
                 'customDataEntryClick',
                 'customTouchMove'
-            );
+            ),
+            
+            customMinY,
+            customMaxY;
 
         /**
          * This function creates the graph using the selection and data provided
@@ -500,6 +503,10 @@ define(function(require){
          * @private
          */
         function getMaxY() {
+            if (customMaxY !== null && customMaxY !== undefined) {
+                return customMaxY
+            }
+
             return d3Array.max(dataByTopic, ({dates}) => d3Array.max(dates, getValue))
         }
 
@@ -508,6 +515,10 @@ define(function(require){
          * @private
          */
         function getMinY() {
+            if (customMinY !== null && customMinY !== undefined) {
+                return customMinY
+            }
+
             return d3Array.min(dataByTopic, ({dates}) => d3Array.min(dates, getValue))
         }
 
@@ -1549,6 +1560,24 @@ define(function(require){
          *     line.xAxisCustomFormat(line.axisTimeCombinations.HOUR_DAY)
          */
         exports.axisTimeCombinations = axisTimeCombinations;
+
+        exports.minY = function(_x) {
+            if (!arguments.length) {
+                return getMinY();
+            }
+            customMinY = _x;
+
+            return this;
+        };
+
+        exports.maxY = function(_x) {
+            if (!arguments.length) {
+                return getMaxY();
+            }
+            customMaxY = _x;
+
+            return this;
+        };
 
         return exports;
     };
