@@ -278,7 +278,10 @@ define(function(require){
                 'customMouseMove',
                 'customDataEntryClick',
                 'customTouchMove'
-            );
+            ),
+            
+            customMinY,
+            customMaxY;
 
         /**
          * This function creates the graph using the selection and data provided
@@ -496,14 +499,38 @@ define(function(require){
         }
 
         /**
+         * Returns max Y value
+         * @private
+         */
+        function getMaxY() {
+            if (customMaxY !== null && customMaxY !== undefined) {
+                return customMaxY
+            }
+
+            return d3Array.max(dataByTopic, ({dates}) => d3Array.max(dates, getValue))
+        }
+
+        /**
+         * Returns min Y value
+         * @private
+         */
+        function getMinY() {
+            if (customMinY !== null && customMinY !== undefined) {
+                return customMinY
+            }
+
+            return d3Array.min(dataByTopic, ({dates}) => d3Array.min(dates, getValue))
+        }
+
+        /**
          * Creates the x and y scales of the graph
          * @private
          */
         function buildScales(){
             let minX = d3Array.min(dataByTopic, ({dates}) => d3Array.min(dates, getDate)),
                 maxX = d3Array.max(dataByTopic, ({dates}) => d3Array.max(dates, getDate)),
-                maxY = d3Array.max(dataByTopic, ({dates}) => d3Array.max(dates, getValue)),
-                minY = d3Array.min(dataByTopic, ({dates}) => d3Array.min(dates, getValue));
+                maxY = getMaxY(),
+                minY = getMinY();
             let yScaleBottomValue = minY < 0 ? minY : 0;
 
             xScale = d3Scale.scaleTime()
@@ -750,7 +777,7 @@ define(function(require){
                 .selectAll('line')
                 .remove();
 
-            let minY = d3Array.min(dataByTopic, ({dates}) => d3Array.min(dates, getValue));
+            let minY = getMinY();
             let shouldHighlightXAxis = minY < 0;
             
             if (grid === 'horizontal' || grid === 'full') {
@@ -1533,6 +1560,24 @@ define(function(require){
          *     line.xAxisCustomFormat(line.axisTimeCombinations.HOUR_DAY)
          */
         exports.axisTimeCombinations = axisTimeCombinations;
+
+        exports.minY = function(_x) {
+            if (!arguments.length) {
+                return getMinY();
+            }
+            customMinY = _x;
+
+            return this;
+        };
+
+        exports.maxY = function(_x) {
+            if (!arguments.length) {
+                return getMaxY();
+            }
+            customMaxY = _x;
+
+            return this;
+        };
 
         return exports;
     };
