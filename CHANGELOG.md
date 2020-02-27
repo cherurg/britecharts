@@ -1,3 +1,7 @@
+2.15.1
+------
+* Fixed bug when all-positive values setup ignored manually set minY. 
+
 2.15.0
 ------
 * Fixed bug of Y-axis domain when all values in the line chart are negative.
