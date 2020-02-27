@@ -519,7 +519,9 @@ define(function(require){
                 return customMinY
             }
 
-            return d3Array.min(dataByTopic, ({dates}) => d3Array.min(dates, getValue))
+            let minY = d3Array.min(dataByTopic, ({dates}) => d3Array.min(dates, getValue))
+
+            return minY < 0 ? minY : 0
         }
 
         /**
@@ -531,14 +533,13 @@ define(function(require){
                 maxX = d3Array.max(dataByTopic, ({dates}) => d3Array.max(dates, getDate)),
                 maxY = getMaxY(),
                 minY = getMinY();
-            let yScaleBottomValue = minY < 0 ? minY : 0;
 
             xScale = d3Scale.scaleTime()
                 .domain([minX, maxX])
                 .rangeRound([0, chartWidth]);
 
             yScale = d3Scale.scaleLinear()
-                .domain([yScaleBottomValue, maxY])
+                .domain([minY, maxY])
                 .rangeRound([chartHeight, 0])
                 .nice();
 
