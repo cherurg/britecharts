@@ -160,6 +160,8 @@ function setNewChart(chartData=getCurrentData(), chartInitString=getCurrentConfi
         tip.topicLabel('values');
     }
 
+    tip.title('My Very Very Very Very Very Very Very Very Very Very LONG Title')
+
     try {
         eval(chartInitString);
     } catch (e) {

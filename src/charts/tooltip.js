@@ -450,12 +450,29 @@ define(function(require){
             }
 
             resetTooltipTitleLines();
-            let firstLine = addTooltipTitleLine();
-            firstLine.text(tTitle);
-            let secondLine = addTooltipTitleLine()
-            secondLine.text('tet')
-            let thirdLine = addTooltipTitleLine()
-            thirdLine.text('third')
+
+            let words = tTitle.split(' ')
+            let word
+            let currentLine = ''
+            let lines = []
+            let pushed = false
+            while(word = words.shift()) {
+                let nextLine = currentLine + word + ' '
+                let nextLineLength = getTextWidth(nextLine, 16, 'Karla, sans-serif')
+                if (nextLineLength >= width - 5) {
+                    lines.push(currentLine)
+                    currentLine = ''
+                    words.unshift(word)
+                } else {
+                    currentLine = nextLine
+                }
+            }
+
+            lines.push(currentLine)
+
+            for (let line of lines) {
+                addTooltipTitleLine().text(line.trim())
+            }
         }
 
         /**
