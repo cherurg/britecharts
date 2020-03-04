@@ -1,3 +1,7 @@
+2.15.2
+------
+* Added support of multi-line tooltip header.
+
 2.15.1
 ------
 * Fixed bug when all-positive values setup ignored manually set minY. 
