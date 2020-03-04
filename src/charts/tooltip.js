@@ -54,6 +54,8 @@ define(function(require){
      *
      */
     return function module() {
+        const TT_TEXT_Y_DEFAULT = 37
+        const TOOLTIP_HEIGHT_DEFAULT = 48
 
         let margin = {
                 top: 2,
@@ -80,10 +82,10 @@ define(function(require){
             tooltipBody,
             tooltipTitle,
             tooltipWidth = 250,
-            tooltipHeight = 48,
+            tooltipHeight = TOOLTIP_HEIGHT_DEFAULT,
             tooltipBorderRadius = 3,
             ttTextX = 0,
-            ttTextY = 37,
+            ttTextY = TT_TEXT_Y_DEFAULT,
             textHeight,
             entryLineLimit = 3,
             initialTooltipTextXPosition = -25,
@@ -123,6 +125,39 @@ define(function(require){
             data,
             svg;
 
+        let titleLinesNumber;
+        function setTitleLines(linesNumber) {
+            titleLinesNumber = linesNumber;
+            let dividerSteps = titleLinesNumber - 1;
+            dividerSteps = dividerSteps >= 0 ? dividerSteps : 0;
+            let additionalOffset = dividerSteps * 16
+            if (tooltipDivider) {
+                tooltipDivider.attr('y1', 31 + additionalOffset)
+                tooltipDivider.attr('y2', 31 + additionalOffset)
+            }
+
+            ttTextY = TT_TEXT_Y_DEFAULT + additionalOffset;
+            tooltipHeight = TOOLTIP_HEIGHT_DEFAULT + additionalOffset;
+        }
+
+        setTitleLines(0);
+
+        function addTooltipTitleLine() {
+            setTitleLines(titleLinesNumber + 1);
+
+            return tooltipTitle
+              .append('text')
+                .classed('tooltip-title', true)
+                .attr('x', -tooltipWidth / 4 + 16)
+                .attr('dy', '.35em')
+                .attr('y', 16 * titleLinesNumber)
+                .style('fill', titleFillColor);
+            }
+        
+        function resetTooltipTitleLines() {
+            setTitleLines(0);
+            tooltipTitle.selectAll('text').remove()
+        }
 
         /**
          * This function creates the graph using the selection as container
@@ -211,12 +246,8 @@ define(function(require){
                 .style('stroke-width', 1);
 
             tooltipTitle = tooltipTextContainer
-              .append('text')
-                .classed('tooltip-title', true)
-                .attr('x', -tooltipWidth / 4 + 16)
-                .attr('dy', '.35em')
-                .attr('y', 16)
-                .style('fill', titleFillColor);
+              .append('g')
+              .attr('class', 'tooltip-title-container');
 
             tooltipDivider = tooltipTextContainer
               .append('line')
@@ -311,8 +342,8 @@ define(function(require){
          * position
          */
         function resetSizeAndPositionPointers() {
-            tooltipHeight = 48;
-            ttTextY = 37;
+            tooltipHeight = TOOLTIP_HEIGHT_DEFAULT;
+            ttTextY = TT_TEXT_Y_DEFAULT;
             ttTextX = 0;
         }
 
@@ -418,7 +449,13 @@ define(function(require){
                 tTitle = formattedDate;
             }
 
-            tooltipTitle.text(tTitle);
+            resetTooltipTitleLines();
+            let firstLine = addTooltipTitleLine();
+            firstLine.text(tTitle);
+            let secondLine = addTooltipTitleLine()
+            secondLine.text('tet')
+            let thirdLine = addTooltipTitleLine()
+            thirdLine.text('third')
         }
 
         /**
@@ -565,8 +602,8 @@ define(function(require){
             }
 
             cleanContent();
-            updateTitle(dataPoint);
             resetSizeAndPositionPointers();
+            updateTitle(dataPoint);
             topics.forEach(updateTopicContent);
         }
 
@@ -647,7 +684,7 @@ define(function(require){
          * @public
          */
         exports.hide = function() {
-            svg.style('visibility', 'hidden');
+           svg.style('visibility', 'hidden');
 
             return this;
         };
